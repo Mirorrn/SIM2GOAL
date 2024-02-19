@@ -87,12 +87,11 @@ def evaluate(args, loader, generator , gt_coll=False,
             total_traj += nei_num.sum()
             batch_pred_traj_fake = []
             batch_samples = []
-            att_score_list_batch = []
             model_input = torch.cat((obs_traj_rel, pred_traj_gt_rel), dim=0)
             val_mask = val_mask[-config.pred_len :]
 
   
-            sgoals = pred_traj_gt[-1] # ToDo: Comment this out
+            sgoals = pred_traj_gt[-1] 
 
             pred_traj_fake_rel, _, _ = generator(model_input, obs_traj, pred_traj_gt,
                                             seq_start_end, nei_num_index, nei_num, plot_sample=plot_sample,
@@ -101,7 +100,7 @@ def evaluate(args, loader, generator , gt_coll=False,
 
             pred_traj_fake_rel = pred_traj_fake_rel[-args.pred_len :]
             pred_traj_fake = relative_to_abs(pred_traj_fake_rel, obs_traj[-1])
-            # pred_traj_fake[-1] = sgoals
+           # pred_traj_fake[-1] = sgoals
             batch_samples.append(samples)
             batch_pred_traj_fake.append(pred_traj_fake)
             ade_, fde_, ade_col_ = cal_ade_fde(pred_traj_gt, pred_traj_fake, val_mask)
@@ -125,25 +124,11 @@ def evaluate(args, loader, generator , gt_coll=False,
                                                                                         seq_start_end, None, nei_num_index)
             coll_pro_szenes_fake += coll_pro_szene_fake
             count_szenes_fake += count_fake
-            if (plot_traj):
-                plot_best(obs_traj, pred_traj_gt, batch_pred_traj_fake, att_score_list_batch, ids,
-                          stack_of_coll_indeces, seq_start_end,
-                          ids_of_col_szenes_fake, loss_mask, config, szene_id, batch_samples)
-                # plot_best_goal(obs_traj, pred_traj_gt, batch_pred_traj_fake, att_score_list_batch, ids,
-                #           stack_of_coll_indeces, seq_start_end,
-                #           ids_of_col_szenes_fake, loss_mask, config, szene_id, batch_samples, pred_traj_fake_goal)
-                #
-                # plot_multimodal(obs_traj, pred_traj_gt, batch_pred_traj_fake, att_score_list_batch, ids,
-                #                stack_of_coll_indeces, seq_start_end,
-                #                ids_of_col_szenes_fake, loss_mask, config, szene_id, batch_samples)
             szene_id += 1
 
         ade = np.mean(ade_outer) #/ (total_traj * args.pred_len)
         fde = np.mean(fde_outer) #/ (total_traj)
         act = coll_pro_szenes_fake / count_szenes_fake
-        # if gt_coll:
-        #     act_gt = coll_pro_szenes / count_szenes
-        #     return ade, fde, act, act_gt
         return ade, fde, act, 0
 
 # check if trajnet is set to True in config if trajnet evaluation

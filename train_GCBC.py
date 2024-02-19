@@ -196,16 +196,18 @@ class Preparation:
     def model_step(self, batch):
         obs_traj, pred_traj_gt, obs_traj_rel, pred_traj_gt_rel, val_mask,\
         loss_mask, seq_start_end, nei_num_index, nei_num, = batch
+        with torch.no_grad():
+            losses = {}
+            MSE_loss = nn.MSELoss()
+            for param in self.generator.parameters(): param.grad = None
 
-        losses = {}
-        MSE_loss = nn.MSELoss()
-        for param in self.generator.parameters(): param.grad = None
+            model_input = torch.cat((obs_traj_rel, pred_traj_gt_rel), dim=0)
 
-        model_input = torch.cat((obs_traj_rel, pred_traj_gt_rel), dim=0)
+            # goals_ids = np.expand_dims(np.random.choice(self.config.pred_len, pred_traj_gt.shape[1]), axis=1)
+            goals_ids = torch.tensor(np.random.choice(self.config.pred_len -8, pred_traj_gt.shape[1],p=[0.01, 0.01, 0.4, 0.58]  )) +8
+            goal = pred_traj_gt[goals_ids, torch.arange(pred_traj_gt.shape[1]), :]
 
-        # goals_ids = np.expand_dims(np.random.choice(self.config.pred_len, pred_traj_gt.shape[1]), axis=1)
-        goals_ids = torch.tensor(np.random.choice(self.config.pred_len, pred_traj_gt.shape[1]))
-        goal = pred_traj_gt[goals_ids, torch.arange(pred_traj_gt.shape[1]), :]
+        
         pred_traj_fake_rel, nll, scale_sum = self.generator(model_input, obs_traj, pred_traj_gt,
                                                                  seq_start_end, nei_num_index,
                                                  nei_num, mode='train',sample_goal=goal)
