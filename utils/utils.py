@@ -13,13 +13,13 @@ def get_dset_path(dset_name, dset_type):
     if config.trajnet:
         _dir = os.path.dirname(__file__)
         _dir = _dir.split("/")[:-2]
-        _dir = "/".join(_dir) + "/Sim2Goal"
-        return os.path.join(_dir, 'datasets/trajnet', dset_name, dset_type)
+        _dir = "/".join(_dir) + "/SIM2GOAL"
+        return os.path.join(_dir, 'datasets_long/trajnet', dset_name, dset_type)
     else:
         _dir = os.path.dirname(__file__)
         _dir = _dir.split("/")[:-2]
-        _dir = "/".join(_dir) + "/Sim2Goal"
-        return os.path.join(_dir, 'datasets/ETHandUTC', dset_name, dset_type)
+        _dir = "/".join(_dir) + "/SIM2GOAL"
+        return os.path.join(_dir, 'datasets_long/ETHandUTC', dset_name, dset_type)
 
 
 def relative_to_abs(rel_traj, start_pos):

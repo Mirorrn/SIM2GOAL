@@ -7,7 +7,7 @@ from config import *
 import numpy as np
 config = Config()
 from data.loader import data_loader
-from models.Sim2Goal import TrajectoryGenerator
+from models.AR import TrajectoryGenerator
 from utils.utils import (
     relative_to_abs,
     get_dset_path,

@@ -13,7 +13,7 @@ from utils.losses import coll_smoothed_loss
 from utils.utils import get_dset_path
 from config import *
 
-from models.Goal_Transformer import TrajectoryGenerator
+from models.AR import TrajectoryGenerator
 
 from eval_Sim2Goal import evaluate
 from utils.utils import relative_to_abs
@@ -204,18 +204,19 @@ class Preparation:
             model_input = torch.cat((obs_traj_rel, pred_traj_gt_rel), dim=0)
 
             # goals_ids = np.expand_dims(np.random.choice(self.config.pred_len, pred_traj_gt.shape[1]), axis=1)
-            goals_ids = torch.tensor(np.random.choice(self.config.pred_len -8, pred_traj_gt.shape[1],p=[0.01, 0.01, 0.4, 0.58]  )) +8
-            goal = pred_traj_gt[goals_ids, torch.arange(pred_traj_gt.shape[1]), :]
+          #  goals_ids = torch.tensor(np.random.choice(self.config.pred_len -8, pred_traj_gt.shape[1],p=[0.01, 0.01, 0.4, 0.58]  )) +8
+            goal = pred_traj_gt[-1, torch.arange(pred_traj_gt.shape[1]), :]
 
         
         pred_traj_fake_rel, nll, scale_sum = self.generator(model_input, obs_traj, pred_traj_gt,
                                                                  seq_start_end, nei_num_index,
                                                  nei_num, mode='train',sample_goal=goal)
-        #pred_traj_fake_abs = relative_to_abs(pred_traj_fake_rel, obs_traj[-1])
+        
+        pred_traj_fake_abs = relative_to_abs(pred_traj_fake_rel, obs_traj[-1])
 
-        #loss_count = coll_smoothed_loss(pred_traj_fake_abs, seq_start_end, nei_num_index)
+        loss_count = coll_smoothed_loss(pred_traj_fake_abs, seq_start_end, nei_num_index)
 
-        loss = nll #+ 30. * loss_count + 0.01*scale_sum# + corrected_pos_loss
+        loss = nll + 30. * loss_count #+ 0.01*scale_sum# + corrected_pos_loss
         loss.backward()
         losses['nll'] = nll.item()
         torch.nn.utils.clip_grad_norm_(self.generator.parameters(), max_norm=3.0, norm_type=2)
