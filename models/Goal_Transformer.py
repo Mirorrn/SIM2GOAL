@@ -163,38 +163,6 @@ class TrajectoryGenerator(nn.Module):
         phi = torch.arctan2(y, x).unsqueeze(dim=1)
         return rho, phi
 
-    def dynamic_window(self, robot_state, u, params_dict, dt):
-        # robot_state state[v_x(m / s), v_y(m / s), yaw(rad), v(m / s), omega(rad / s)] x and y are displacments to last state
-        # Dynamic window from robot specification
-        batch = u.shape[0]
-        theta_current = robot_state[:, 2].unsqueeze(1)
-        v_t = robot_state[:, 3].unsqueeze(1)
-        omega = robot_state[:, 4].unsqueeze(1)
-        v_new = u[:, 0].unsqueeze(1)
-        yaw_new = u[:, 1].unsqueeze(1)
-        filler = torch.ones_like(robot_state[:, 4]).unsqueeze(1)
-
-        Vs = [params_dict["min_speed"] * filler, params_dict["max_speed"] * filler,
-              -params_dict["max_yaw_rate"] * filler, params_dict["max_yaw_rate"] * filler]
-        # Dynamic window from motion model
-        Vd = [v_t - params_dict["max_accel"] * dt,
-              v_t + params_dict["max_accel"] * dt,
-              omega - filler * params_dict["max_delta_yaw_rate"] * dt,
-              omega + filler * params_dict["max_delta_yaw_rate"] * dt]
-
-        v_min = torch.max(torch.cat([Vs[0], Vd[0]], dim=1), dim=1)[0].unsqueeze(dim=1)
-        v_max = torch.min(torch.cat([Vs[1], Vd[1]], dim=1), dim=1)[0].unsqueeze(dim=1)
-        yaw_rate_min = torch.max(torch.cat([Vs[2], Vd[2]], dim=1), dim=1)[0].unsqueeze(dim=1)
-        yaw_rate_max = torch.min(torch.cat([Vs[3], Vd[3]], dim=1), dim=1)[0].unsqueeze(dim=1)
-        dw = [v_min, v_max, yaw_rate_min, yaw_rate_max]
-
-        v_new = torch.clamp(v_new, min=dw[0], max=dw[1])
-        yaw_new = torch.clamp(yaw_new, min=dw[2], max=dw[3])
-        theta = (yaw_new * dt + theta_current)
-        v_x, v_y = pol2cart(v_new, theta)
-        new_robot_state = torch.cat([v_x, v_y, theta, v_new, yaw_new], dim=-1)
-        return new_robot_state
-
     def get_robot_state(self, robot_traj_rel, dt=0.4):
         start_time = 7
         _, last_yaw = self.cart2pol(robot_traj_rel[start_time-1, 0],
