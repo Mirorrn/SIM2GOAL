@@ -195,12 +195,12 @@ class TrajectoryGenerator(nn.Module):
         output_pred_sampled = mu + torch.exp(scale) * noise_sampled
         if mode != 'test':
             nll = GaußNLL(mu, scale, traj_rel[self.obs_len::])
-        robot_state = self.get_robot_state(traj_rel)
-        for i in range(self.predictions_steps):
-            u = self.actionXYtoROT(output_pred_sampled[i, :], robot_state, self.dt)
-            robot_state = self.dynamic_window(robot_state, u,
-                                         self.robot_params_dict,
-                                         self.dt)
-            output_pred_sampled[i, :] = robot_state[:, :2] * self.dt
+    #    robot_state = self.get_robot_state(traj_rel)
+      #  for i in range(self.predictions_steps):
+      #      u = self.actionXYtoROT(output_pred_sampled[i, :], robot_state, self.dt)
+      #      robot_state = self.dynamic_window(robot_state, u,
+      #                                   self.robot_params_dict,
+      #                                   self.dt)
+      #      output_pred_sampled[i, :] = robot_state[:, :2] * self.dt
 
         return output_pred_sampled, nll, output_pred_sampled

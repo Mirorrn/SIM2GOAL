@@ -67,7 +67,7 @@ def cal_ade_fde(pred_traj_gt, pred_traj_fake, val_mask):
     ade = compute_ade(pred_traj_fake.cpu().numpy(), pred_traj_gt.cpu().numpy(), val_mask)
     return ade, fde, ade_col
 
-def evaluate(args, loader, generator, sample_generator, sampler , gt_coll=False,
+def evaluate(args, loader, generator , gt_coll=False,
              plot_traj=False, plot_sample=False, robot = None):
     ade_outer, fde_outer = [], []
     total_traj = 0

@@ -51,7 +51,7 @@ def fast_coll_counter(pred_batch,seq_start_end, ids, mask, sample=20):
     if not ids:
         mask = mask.unsqueeze(dim=0).repeat(20, 1, 1, 1)
         mask = mask.view(20 * 12, pred_batch.shape[2], pred_batch.shape[2])
-        pred = pred_batch.view(20 * 12, pred_batch.shape[2], 2)
+        pred = pred_batch.view(-1, pred_batch.shape[2], 2)
     for i, (start, end) in enumerate(seq_start_end):
         start = start.item()
         end = end.item()

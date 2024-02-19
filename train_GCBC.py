@@ -124,7 +124,7 @@ class Preparation:
         metrics = {}
         generator.eval()  # will notify all your layers that you are in eval mode, that way, batchnorm or dropout layers will work in eval mode instead of training mode.
 
-        ade, fde, act, _ = evaluate(self.config, loader, generator, self.sample_generator, self.sampler)
+        ade, fde, act, _ = evaluate(self.config, loader, generator)
         metrics['act'] = act
         metrics['ade'] = ade
         metrics['fde'] = fde
