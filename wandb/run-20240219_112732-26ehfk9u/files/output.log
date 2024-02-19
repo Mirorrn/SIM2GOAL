@@ -1,0 +1,123 @@
+
+[INFO: train_GCBC.py:   67]: Initializing train dataset
+Data loaded!
+[INFO: train_GCBC.py:   69]: Initializing val dataset
+Data loaded!
+[INFO: train_GCBC.py:   72]: There are 33 iterations per epoch
+[INFO: train_GCBC.py:   78]: Here is the generator:
+[INFO: train_GCBC.py:   79]: TrajectoryGenerator(
+  (hist_encoder): Hist_Encoder(
+    (transformer_encoder): TransformerEncoder(
+      (layers): ModuleList(
+        (0): TransformerEncoderLayer(
+          (self_attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=16, out_features=16, bias=True)
+          )
+          (linear1): Linear(in_features=16, out_features=32, bias=True)
+          (dropout): Dropout(p=0.0, inplace=False)
+          (linear2): Linear(in_features=32, out_features=16, bias=True)
+          (norm1): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+          (norm2): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+          (dropout1): Dropout(p=0.0, inplace=False)
+          (dropout2): Dropout(p=0.0, inplace=False)
+        )
+      )
+    )
+    (dropout): Dropout(p=0.0, inplace=False)
+    (fc): Linear(in_features=32, out_features=16, bias=True)
+    (input_fc): Linear(in_features=2, out_features=16, bias=True)
+  )
+  (decoder): Decoder_TF(
+    (transformer_decoder): TransformerDecoder(
+      (layers): ModuleList(
+        (0): TransformerDecoderLayer(
+          (self_attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=18, out_features=18, bias=True)
+          )
+          (multihead_attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=18, out_features=18, bias=True)
+          )
+          (linear1): Linear(in_features=18, out_features=32, bias=True)
+          (dropout): Dropout(p=0.0, inplace=False)
+          (linear2): Linear(in_features=32, out_features=18, bias=True)
+          (norm1): LayerNorm((18,), eps=0.001, elementwise_affine=True)
+          (norm2): LayerNorm((18,), eps=0.001, elementwise_affine=True)
+          (norm3): LayerNorm((18,), eps=0.001, elementwise_affine=True)
+          (dropout1): Dropout(p=0.0, inplace=False)
+          (dropout2): Dropout(p=0.0, inplace=False)
+          (dropout3): Dropout(p=0.0, inplace=False)
+        )
+      )
+    )
+    (dropout): Dropout(p=0.0, inplace=False)
+    (fc): Linear(in_features=36, out_features=18, bias=True)
+    (input_fc): Linear(in_features=2, out_features=18, bias=True)
+    (output_fc): Linear(in_features=18, out_features=4, bias=True)
+  )
+)
+Learning with ADAM!
+[INFO: train_GCBC.py:  228]: Starting epoch 0
+Traceback (most recent call last):
+  File "/home/martin/.local/lib/python3.8/site-packages/numpy/core/fromnumeric.py", line 57, in _wrapfunc
+    return bound(*args, **kwds)
+TypeError: clip() received an invalid combination of arguments - got (float, float, out=NoneType), but expected one of:
+ * (Tensor min, Tensor max)
+ * (Number min, Number max)
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/home/martin/SIM2GOAL/train_GCBC.py", line 239, in <module>
+    prep.train()
+  File "/home/martin/SIM2GOAL/train_GCBC.py", line 231, in train
+    self.losses = self.model_step(batch)
+  File "/home/martin/SIM2GOAL/train_GCBC.py", line 209, in model_step
+    pred_traj_fake_rel, nll, scale_sum = self.generator(model_input, obs_traj, pred_traj_gt,
+  File "/home/martin/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/martin/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/martin/SIM2GOAL/models/Goal_Transformer.py", line 230, in forward
+    robot_state = self.get_robot_state(traj_rel)
+  File "/home/martin/SIM2GOAL/models/Goal_Transformer.py", line 207, in get_robot_state
+    v_t = np.clip(v_t, a_min=self.robot_params_dict['min_speed'],
+  File "<__array_function__ internals>", line 180, in clip
+  File "/home/martin/.local/lib/python3.8/site-packages/numpy/core/fromnumeric.py", line 2152, in clip
+    return _wrapfunc(a, 'clip', a_min, a_max, out=out, **kwargs)
+  File "/home/martin/.local/lib/python3.8/site-packages/numpy/core/fromnumeric.py", line 66, in _wrapfunc
+    return _wrapit(obj, method, *args, **kwds)
+  File "/home/martin/.local/lib/python3.8/site-packages/numpy/core/fromnumeric.py", line 43, in _wrapit
+    result = getattr(asarray(obj), method)(*args, **kwds)
+  File "/home/martin/.local/lib/python3.8/site-packages/torch/_tensor.py", line 1062, in __array__
+    return self.numpy()
+TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.
+Traceback (most recent call last):
+  File "/home/martin/.local/lib/python3.8/site-packages/numpy/core/fromnumeric.py", line 57, in _wrapfunc
+    return bound(*args, **kwds)
+TypeError: clip() received an invalid combination of arguments - got (float, float, out=NoneType), but expected one of:
+ * (Tensor min, Tensor max)
+ * (Number min, Number max)
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/home/martin/SIM2GOAL/train_GCBC.py", line 239, in <module>
+    prep.train()
+  File "/home/martin/SIM2GOAL/train_GCBC.py", line 231, in train
+    self.losses = self.model_step(batch)
+  File "/home/martin/SIM2GOAL/train_GCBC.py", line 209, in model_step
+    pred_traj_fake_rel, nll, scale_sum = self.generator(model_input, obs_traj, pred_traj_gt,
+  File "/home/martin/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/martin/.local/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/martin/SIM2GOAL/models/Goal_Transformer.py", line 230, in forward
+    robot_state = self.get_robot_state(traj_rel)
+  File "/home/martin/SIM2GOAL/models/Goal_Transformer.py", line 207, in get_robot_state
+    v_t = np.clip(v_t, a_min=self.robot_params_dict['min_speed'],
+  File "<__array_function__ internals>", line 180, in clip
+  File "/home/martin/.local/lib/python3.8/site-packages/numpy/core/fromnumeric.py", line 2152, in clip
+    return _wrapfunc(a, 'clip', a_min, a_max, out=out, **kwargs)
+  File "/home/martin/.local/lib/python3.8/site-packages/numpy/core/fromnumeric.py", line 66, in _wrapfunc
+    return _wrapit(obj, method, *args, **kwds)
+  File "/home/martin/.local/lib/python3.8/site-packages/numpy/core/fromnumeric.py", line 43, in _wrapit
+    result = getattr(asarray(obj), method)(*args, **kwds)
+  File "/home/martin/.local/lib/python3.8/site-packages/torch/_tensor.py", line 1062, in __array__
+    return self.numpy()
+TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.
