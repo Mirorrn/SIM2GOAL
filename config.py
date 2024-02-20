@@ -1,83 +1,83 @@
-import math
+
 import os
 from os.path import expanduser
 home = expanduser("~")
 
+
 class Config:
-    def __init__(self):
-        self.DIR = home +'/SIM2GOAL/models/weights/'
-        self.experiment_name = 'GCBC-univ_AR_Transformer_more_data_debug'
-        path= self.DIR + self.experiment_name
-        if not os.path.exists(path):
-            os.makedirs(path)
-        self.model_path = path
-        # Dataset options
-        self.dataset_name = 'univ'   # Choose dataset split
-        self.goal_sampling = False
-        self.trajnet = False # Trajenet++ training datasetset will be used
-        self.nabs = False # absolute position but shift the origin to the latest observed time slot
-        self.delim = 'tab'
-        self.loader_num_workers = 4
-        # ETH & UTC
-        if self.trajnet:
-            self.obs_len = 9
-            self.pred_len = 12
-        else:
-            self.obs_len = 8
-            self.pred_len = 12
-        # only for ETH and UTC
-        self.skip = 1
-        self.seed = 42
-        self.min_x = -7.69
-        self.min_y = -10.31
-        self.img_h = 28
-        self.img_w = 28
-        self.collision_distance = 0.2
-        # Model Options
-        self.prelearning = False
+    DIR = home +'/SIM2GOAL/models/weights/'
+    experiment_name = 'GCBC-univ_AR_Transformer_more_data_debug'
+    path= DIR + experiment_name
+    if not os.path.exists(path):
+        os.makedirs(path)
+    model_path = path
+    # Dataset options
+    dataset_name = 'univ'   # Choose dataset split
+    goal_sampling = False
+    trajnet = False # Trajenet++ training datasetset will be used
+    nabs = False # absolute position but shift the origin to the latest observed time slot
+    delim = 'tab'
+    loader_num_workers = 4
+    # ETH & UTC
+    if trajnet:
+        obs_len = 9
+        pred_len = 12
+    else:
+        obs_len = 8
+        pred_len = 12
+    # only for ETH and UTC
+    skip = 1
+    seed = 42
+    min_x = -7.69
+    min_y = -10.31
+    img_h = 28
+    img_w = 28
+    collision_distance = 0.2
+    # Model Options
+    prelearning = False
 
-        self.cpg_loss = 10.
-        self.l2_loss = 10.
-        self.best_k = 1.
-        self.num_samples = 20
+    cpg_loss = 10.
+    l2_loss = 10.
+    best_k = 1.
+    num_samples = 20
 
-        # for Goal Flow Training
-        self.clamp_flow = False
-        self.clip_grad = False
+    # for Goal Flow Training
+    clamp_flow = False
+    clip_grad = False
 
-        # Generator Options
-        self.g_learning_rate = 0.001    # For Coloss-GAN and all other generators learning rate
-        self.g_steps = 1                # generator step
-        # Discriminator Options
-        self.adam = 1                  # check in code (Preperation) what else will be used, div sampler sgd will be used
-        self.augment = True
-        self.all_rel_persons = False
-        self.gpu_num = "0"
-        self.device='cpu'
-        # Optimization
-        self.batch_size = 64
-        self.num_epochs = 300
-        # Loss Options
-        self.l2_loss_weight = 1
-        # Output
-        self.output_dir = self.model_path
-        self.checkpoint_name = 'checkpoint'
-        self.restore_from_checkpoint = False
-        self.checkpoint_start_from = ''
+    # Generator Options
+    g_learning_rate = 0.001    # For Coloss-GAN and all other generators learning rate
+    g_steps = 1                # generator step
+    # Discriminator Options
+    adam = 1                  # check in code (Preperation) what else will be used, div sampler sgd will be used
+    augment = True
+    all_rel_persons = False
+    gpu_num = "0"
+    device='cpu'
+    # Optimization
+    batch_size = 64
+    num_epochs = 300
+    # Loss Options
+    l2_loss_weight = 1
+    # Output
+    output_dir = model_path
+    checkpoint_name = 'checkpoint'
+    restore_from_checkpoint = False
+    checkpoint_start_from = ''
 
-        if not self.trajnet:
-           self.GFlow_checkpoint_start_from   = self.DIR + 'GFLOW-ETHandUCY-'
-           self.sampler_checkpoint_start_from = self.DIR + 'GFLOW-ETHandUCY_sampler-'
+    if not trajnet:
+        GFlow_checkpoint_start_from   = DIR + 'GFLOW-ETHandUCY-'
+        sampler_checkpoint_start_from = DIR + 'GFLOW-ETHandUCY_sampler-'
 
-        else:
-            self.sampler_checkpoint_start_from = self.DIR + 'GFLOW-TrajNet_sampler-'
-            self.GFlow_checkpoint_start_from   = self.DIR + 'GFLOW-TrajNet-'
-            self.student_checkpoint_start_from = self.DIR + 'SIM2Goal-TrajNet-'
+    else:
+        sampler_checkpoint_start_from = DIR + 'GFLOW-TrajNet_sampler-'
+        GFlow_checkpoint_start_from   = DIR + 'GFLOW-TrajNet-'
+        student_checkpoint_start_from = DIR + 'SIM2Goal-TrajNet-'
 
-        self.num_samples_check = 5000
-        self.check_after_num_epochs = 5
-        # Misc
-        self.use_gpu = 1
-        self.timing = 0
-        self.passing_time = 1
-        self.ifdebug = False
+    num_samples_check = 5000
+    check_after_num_epochs = 5
+    # Misc
+    use_gpu = 1
+    timing = 0
+    passing_time = 1
+    ifdebug = False
