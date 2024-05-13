@@ -5,7 +5,7 @@ home = expanduser("~")
 class Config:
     def __init__(self):
         self.DIR = home +'/Sim2Goal/models/weights/'
-        self.experiment_name = 'SI-TrajNet_NEW_NoKL_5'
+        self.experiment_name = 'SI-TrajNet_NEW_NoKL_5_test'
         path= self.DIR + self.experiment_name
         if not os.path.exists(path):
             os.makedirs(path)
